@@ -1,0 +1,15 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #222;
+  padding: 20px;
+  color: white;
+}
+
+.account-name {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
