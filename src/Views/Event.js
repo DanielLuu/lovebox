@@ -34,6 +34,9 @@ class View extends Component {
         this.props.receiveConfessions(res);
       });
     }
+    this.props.formChange('first_name', '');
+    this.props.formChange('last_name', '');
+    this.props.formChange('text', '');
     event.preventDefault();
   }
 
@@ -54,48 +57,53 @@ class View extends Component {
 
   render = () => {
     let { info, form, confessions } = this.props.event;
-    let approved = confessions.filter(confession => confession.approved);
+    let approved = confessions
+    .filter(confession => confession.approved)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     return (
       <div className='App container-fluid'>
         <h2 className='event-title'>{info.name} Confessions</h2>
-        <form className='confess-form' onSubmit={this.handleSubmit}>
-          <TextField
-            floatingLabelText={'First Name'}
-            fullWidth={true}
-            value={form.first_name}
-            onChange={(event) => {
-            this.handleChange('first_name', event);
-          }} />
-          <TextField
-            floatingLabelText={'Last Name'}
-            fullWidth={true}
-            value={form.last_name}
-            onChange={(event) => {
-            this.handleChange('last_name', event);
-          }} />
-          <TextField
-            floatingLabelText={'Confession'}
-            multiLine={true}
-            rows={2}
-            fullWidth={true}
-            value={form.text}
-            onChange={(event) => {
-            this.handleChange('text', event);
-          }} />
-          <div className='btn-bar'>
-            <RaisedButton type='submit' primary={true} fullWidth={true} label='CONFESS' />
-          </div>
-        </form>
-        <ReactTable
-          className='-striped'
-          data={approved}
-          columns={this.columns}
-          filterable
-          defaultFilterMethod={this.customFilter}
-          pageSize={approved.length}
-          showPagination={false}
-          loading={!approved}
-        />
+        <div className='align-left'>
+          <div className='red'>NOTE: Your confession will not appear until it is approved.</div>
+          <form className='confess-form' onSubmit={this.handleSubmit}>
+            <TextField
+              floatingLabelText={'First Name'}
+              fullWidth={true}
+              value={form.first_name}
+              onChange={(event) => {
+              this.handleChange('first_name', event);
+            }} />
+            <TextField
+              floatingLabelText={'Last Name'}
+              fullWidth={true}
+              value={form.last_name}
+              onChange={(event) => {
+              this.handleChange('last_name', event);
+            }} />
+            <TextField
+              floatingLabelText={'Confession'}
+              multiLine={true}
+              rows={2}
+              fullWidth={true}
+              value={form.text}
+              onChange={(event) => {
+              this.handleChange('text', event);
+            }} />
+            <div className='btn-bar'>
+              <RaisedButton type='submit' primary={true} fullWidth={true} label='CONFESS' />
+            </div>
+          </form>
+          <ReactTable
+            className='-striped'
+            data={approved}
+            columns={this.columns}
+            filterable
+            defaultFilterMethod={this.customFilter}
+            pageSize={approved.length}
+            showPagination={false}
+            loading={!approved}
+          />
+        </div>
       </div>
     );
   }
