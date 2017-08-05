@@ -1,3 +1,7 @@
+.rt-td {
+	white-space: normal !important
+}
+
 .event-title {
   margin-bottom: 0;
 }
