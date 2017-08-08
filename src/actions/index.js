@@ -45,3 +45,14 @@ export const signin = (signin) => ({
 	type: 'SIGNIN',
 	signin
 });
+
+export const createChange = (field, value) => ({
+	type: 'CREATE_CHANGE',
+	field,
+	value
+});
+
+export const createDone = (done) => ({
+	type: 'CREATE_DONE',
+	done
+});

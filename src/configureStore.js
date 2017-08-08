@@ -1,11 +1,12 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { event, login } from './reducers';
+import { event, login, create } from './reducers';
 
 const appReducer = combineReducers({
   event,
-  login
+  login,
+  create
 });
 
 const configureStore = () => {

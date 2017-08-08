@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import App from './App';
-import { Event, Admin, Login } from './Views';
+import { Event, Admin, Login, Create } from './Views';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
@@ -20,10 +20,14 @@ ReactDOM.render(
     <MuiThemeProvider>
       <BrowserRouter>
         <div>
-          <Route path='/' component={App}/>
-          <Route path='/login' component={Login}/>
-          <Route path='/event/:event/admin' component={Admin} />
-          <Route path='/event/:event' component={Event} />
+          <App />
+          <Switch>
+            <Route exact path='/' component={Login}/>
+            <Route path='/create' component={Create}/>
+            <Route path='/login' component={Login}/>
+            <Route path='/event/:event' component={Event} />
+            <Route path='/event/:event/admin' component={Admin} />
+          </Switch>
         </div>
       </BrowserRouter>
     </MuiThemeProvider>
