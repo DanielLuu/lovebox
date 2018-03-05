@@ -15,6 +15,8 @@ class View extends Component {
         this.props.receiveUser(user);
       }
     });
+    this.props.createChange('name', '');
+    this.props.createChange('code', '');
   }
 
   handleChange = (field, event) => {
@@ -25,14 +27,15 @@ class View extends Component {
     let { form } = this.props.create;
     let { user } = this.props.login;
     if (form.name.length > 1 && form.code.length > 0) {
-      http.post('/api/event/create', {...form, user_id: user.id}).then((res) => {
+      http.post('/api/event/create', {
+        ...form,
+        user_id: user.id
+      }).then((res) => {
         this.props.createDone(true);
       });
     } else {
       alert('Please make sure you fill out both a title and a code.');
     }
-    this.props.createChange('name', '');
-    this.props.createChange('code', '');
     event.preventDefault();
   }
 

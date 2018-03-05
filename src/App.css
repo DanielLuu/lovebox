@@ -13,3 +13,8 @@
   top: 20px;
   right: 20px;
 }
+
+.account-name a {
+  color: white;
+  font-weight: bold;
+}

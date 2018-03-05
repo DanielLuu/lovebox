@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import App from './App';
-import { Event, Admin, Login, Create } from './Views';
+import { Event, Admin, Login, Create, Profile } from './Views';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
@@ -25,8 +25,9 @@ ReactDOM.render(
             <Route exact path='/' component={Login}/>
             <Route path='/create' component={Create}/>
             <Route path='/login' component={Login}/>
-            <Route path='/event/:event' component={Event} />
+            <Route path='/profile' component={Profile}/>
             <Route path='/event/:event/admin' component={Admin} />
+            <Route path='/event/:event' component={Event} />
           </Switch>
         </div>
       </BrowserRouter>

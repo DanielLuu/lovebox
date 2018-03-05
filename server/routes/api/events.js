@@ -23,9 +23,14 @@ module.exports = (app) => {
           }).then(() => {
             return trx('admins').insert({
               user_id: body.user_id,
-              event_code: body.code
+              event_code: body.code,
+              created_at: trx.raw('now()'),
+              updated_at: trx.raw('now()')
             }).then(() => {
-              res.json({});
+              res.json({
+                name: body.name,
+                code: body.code
+              });
             });
           });
         } else {

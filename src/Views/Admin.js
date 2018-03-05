@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { http } from '../Common/Http';
 import * as actions from '../actions';
 import { Redirect } from 'react-router-dom';
+import { Event } from './Event';
 
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
@@ -16,6 +17,7 @@ class View extends Component {
         let user = res[0];
         this.props.receiveUser(user);
         let event = this.props.match.params.event;
+        console.log(event)
         if (event) {
           http.post('/api/admin/status', {
             user_id: user.id,
@@ -75,7 +77,6 @@ class View extends Component {
     let { admin, adminLoaded } = this.props.login;
     let event = this.props.match.params.event;
     let disapproved = confessions.filter(confession => !confession.approved);
-    console.log(admin);
     return (
       <div className='App container-fluid'>
         {adminLoaded && <div>
@@ -91,6 +92,7 @@ class View extends Component {
               showPagination={false}
               loading={!confessions}
             />
+            <Event {...this.props}/>
           </div> : <Redirect to={"/event/" + event} />}
         </div>}
       </div>

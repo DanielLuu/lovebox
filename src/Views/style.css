@@ -46,3 +46,7 @@
 .align-left {
   text-align: left;
 }
+
+.event-link {
+	margin: 15px 0;
+}

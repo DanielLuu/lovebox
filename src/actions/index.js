@@ -56,3 +56,8 @@ export const createDone = (done) => ({
 	type: 'CREATE_DONE',
 	done
 });
+
+export const receiveProfileEvents = (events) => ({
+	type: 'RECEIVE_PROFILE_EVENTS',
+	events
+});

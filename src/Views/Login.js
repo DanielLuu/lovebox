@@ -31,6 +31,8 @@ class View extends Component {
     http.post('/api/accounts/login', signin).then((res) => {
       if (!res.error) {
         this.props.signin(true);
+      } else {
+        alert(res.error);
       }
     });
     event.preventDefault();
@@ -40,7 +42,7 @@ class View extends Component {
     let { signin, signup, signedIn } = this.props.login;
     return (
       <div className='App container-fluid'>
-        {signedIn ? <Redirect to='/event/U14/admin'/> : <div>
+        {signedIn ? <Redirect to='/profile'/> : <div>
           <h2>Login</h2>
           <form className='confess-form' onSubmit={this.signin}>
             <TextField

@@ -66,11 +66,21 @@ const adminLoaded = (state = false, action) => {
   }
 };
 
+const events = (state = [], action) => {
+  switch (action.type) {
+    case 'RECEIVE_PROFILE_EVENTS':
+      return action.events;
+    default:
+      return state;
+  }
+};
+
 export const login = combineReducers({
   signup,
   signin,
   user,
   signedIn,
   admin,
-  adminLoaded
+  adminLoaded,
+  events
 });

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from './actions';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import './App.css'
 //<Link to='/login'><button className='btn'>Sign In</button></Link>
@@ -12,7 +12,9 @@ class View extends Component {
       <div className='App'>
         <div className='App-header'>
           <div className='account-name'>
-            {user.id ? <div>{user.first_name + ' ' + user.last_name} </div>
+            {user.id ? <Link to='/profile'>
+              {user.first_name + ' ' + user.last_name}
+            </Link>
             : <div></div>}
           </div>
           <h2>lovebox</h2>
