@@ -32,6 +32,7 @@ class View extends Component {
     if (event_code) {
       http.post('/api/confess', {...form, event_code}).then((res) => {
         this.props.receiveConfessions(res);
+        alert('Confession submitted!');
       });
     }
     this.props.formChange('first_name', '');
