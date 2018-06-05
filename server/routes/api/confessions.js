@@ -35,6 +35,22 @@ module.exports = (app) => {
     });
   });
 
+  app.post('/api/confessions/del', (req, res) => {
+    const body = req.body;
+    knex.transaction((trx) => {
+      return trx('confessions').where({
+        id: body.id,
+      }).del().then((result) => {
+        return trx('confessions').select('*').where({
+          event_code: body.event_code
+        })
+        .then((result) => {
+          res.json(result);
+        });
+      });
+    });
+  });
+
   app.post('/api/confession_admin/approve', (req, res) => {
     const body = req.body;
     knex.transaction((trx) => {

@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import { addAdmin } from './admin';
+
 
 const confessions = (state = [], action) => {
   switch (action.type) {
@@ -33,10 +35,21 @@ const form = (state = {
   }
 };
 
+const admins = (state = [], action) => {
+  switch (action.type) {
+    case 'RECEIVE_ADMINS':
+      return action.admins;
+    default:
+      return state;
+  }
+};
+
 export const event = combineReducers({
   info,
   confessions,
-  form
+  form,
+  admins,
+  addAdmin
 });
 
 export * from './login';

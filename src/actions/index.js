@@ -13,6 +13,16 @@ export const setAdmin = (admin) => ({
 	admin
 });
 
+export const editAddAdmin = (email) => ({
+	type: 'EDIT_ADD_ADMIN',
+	email
+});
+
+export const receiveAdmins = (admins) => ({
+	type: 'RECEIVE_ADMINS',
+	admins
+});
+
 export const receiveConfessions = (confessions) => ({
 	type: 'RECEIVE_CONFESSIONS',
 	confessions

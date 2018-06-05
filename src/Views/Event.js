@@ -10,8 +10,15 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 
 class View extends Component {
+  columns = [
+    { Header: 'First', accessor: 'first_name', width: 200 },
+    { Header: 'Last', accessor: 'last_name', width: 200 },
+    { Header: 'Confession', accessor: 'text' },
+  ];
+
   componentWillMount = () => {
     let event = this.props.match.params.event;
+    let { isAdmin } = this.props;
     if (event) {
       http.get('/api/event/' + event).then((res) => {
         this.props.receiveEvent(res);
@@ -19,7 +26,33 @@ class View extends Component {
       http.get('/api/confessions/' + event).then((res) => {
         this.props.receiveConfessions(res);
       });
+
+      if (isAdmin) {
+        this.columns.push({
+          Header: 'Delete',
+          accessor: 'approved',
+          width: 120,
+          Cell: row => {
+            return <div className='change-cell'>
+              <button className='change-btn delete' onClick={() => {
+                this.delConfession(row.original.id);
+              }}>
+                <i className='fa fa-close fa-lg'/>
+              </button>
+            </div>
+          }
+        });
+      }
     }
+  }
+
+  delConfession = (id) => {
+    let event_code = this.props.match.params.event;
+    http.post('/api/confessions/del', {id, event_code}).then((res) => {
+      if (!res.error) {
+        this.props.receiveConfessions(res);
+      }
+    });
   }
 
   handleChange = (field, event) => {
@@ -41,12 +74,6 @@ class View extends Component {
     event.preventDefault();
   }
 
-  columns = [
-    { Header: 'First', accessor: 'first_name', width: 200 },
-    { Header: 'Last', accessor: 'last_name', width: 200 },
-    { Header: 'Confession', accessor: 'text' },
-  ];
-
   customFilter = (filter, row) => {
     const id = filter.pivotId || filter.id;
     if (row[id] !== null && typeof row[id] === 'string') {
@@ -62,7 +89,7 @@ class View extends Component {
     .filter(confession => confession.approved)
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     return (
-      <div className='App container-fluid'>
+      <div className='App container-fluid event-container'>
         <h2 className='event-title'>{info.name} Confessions</h2>
         <div className='align-left'>
           <div className='red'>NOTE: Your confession will not appear until it is approved.</div>
