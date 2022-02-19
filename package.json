@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "nodemon": "^2.0.15",
     "react-scripts": "1.0.10"
   },
   "dependencies": {
@@ -12,9 +13,10 @@
     "express": "^4.15.3",
     "flexboxgrid": "^6.3.1",
     "font-awesome": "^4.7.0",
-    "knex": "^0.13.0",
+    "knex": "^0.95.15",
+    "luxon": "^2.3.0",
     "material-ui": "^0.18.7",
-    "pg": "^7.0.2",
+    "pg": "^8.7.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
@@ -30,7 +32,20 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "nodemon"
+  },
+  "nodemonConfig": {
+    "exec": "node server",
+    "watch": [
+      "routes/*",
+      "index.js"
+    ],
+    "ignore": [
+      "**/__tests__/**",
+      "*.test.js",
+      "*.spec.js"
+    ]
   },
   "proxy": "http://localhost:9000"
 }
