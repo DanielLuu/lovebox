@@ -1,31 +1,32 @@
+import qs from 'qs'
+
 const headers = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
-};
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+}
 
 export const http = {
-  get: (url) => {
-    return fetch(url, {
+  get: (url, params) => {
+    return fetch(`${url}?${qs.stringify(params)}`, {
       headers: headers,
-      credentials: 'include'
-    })
-    .then((response) => response.json());
+      credentials: 'include',
+    }).then((response) => response.json())
   },
   post: (url, data) => {
     return fetch(url, {
       headers: headers,
       method: 'POST',
       credentials: 'include',
-      body: JSON.stringify(data)
-    }).then((response) => response.json());
+      body: JSON.stringify(data),
+    }).then((response) => response.json())
   },
   image: (url, data, type) => {
     return fetch(url, {
       headers: {
-        'Content-Type': type
+        'Content-Type': type,
       },
       method: 'PUT',
-      body: data
-    }).then((response) => response);
-  }
+      body: data,
+    }).then((response) => response)
+  },
 }
