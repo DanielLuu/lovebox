@@ -82,7 +82,7 @@ class View extends Component {
                 onRequestClose={this.handleRequestClose}
               >
                 <div className='reaction-pop'>
-                  {['❤️', '😂', '😮', '😭'].map((reaction) => {
+                  {['❤️', '😂', '😮', '😭', '🍆', '🍑'].map((reaction) => {
                     return (
                       <button
                         onClick={() => {
