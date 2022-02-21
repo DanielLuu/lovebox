@@ -118,7 +118,7 @@ class View extends Component {
 
     return (
       <div className='App container-fluid event-container'>
-        <AdSlot name='nookazon_itm_leaderboard' />
+        <AdSlot name='top-leaderboard' type='leaderboard_atf' />
 
         <h2 className='event-title'>{info.name} Confessions</h2>
         <div className='red' style={{ marginTop: 10 }}>
@@ -213,6 +213,7 @@ class View extends Component {
               const { id, first_name, last_name, text } = confession
               return (
                 <div
+                  key={id}
                   className='col-xs-12 col-sm-4'
                   style={{ marginBottom: 15 }}
                 >
@@ -225,7 +226,10 @@ class View extends Component {
                         }}
                       >
                         <div style={{ fontWeight: 'bold' }}>
-                          ❤️ {first_name} {last_name}
+                          <span role='img' aria-label='heart'>
+                            ❤️
+                          </span>{' '}
+                          {first_name} {last_name}
                         </div>
                         {isAdmin && (
                           <button
@@ -246,7 +250,7 @@ class View extends Component {
               )
             })}
           </div>
-          <AdSlot name='nookazon_itm_leaderboard_btf' />
+          <AdSlot name='bottom-leaderboard' type='leaderboard_btf' />
         </div>
       </div>
     )
