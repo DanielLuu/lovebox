@@ -6,7 +6,8 @@ module.exports = (app) => {
     const confessionQuery = knex('confessions')
       .select('*')
       .where({ event_code: event })
-
+      .orderBy('created_at', 'desc')
+      
     if (!approved) {
       confessionQuery.where('approved', true)
     }
@@ -103,5 +104,58 @@ module.exports = (app) => {
             })
         })
     })
+  })
+
+  app.post('/api/confessions/react', async (req, res) => {
+    try {
+      const sid = req.session.sid
+      if (!sid) return res.json({ error: 'You must be logged in to do this' })
+
+      const user = await knex('users')
+        .select('id')
+        .where('session_key', sid)
+        .first()
+
+      // Check if user has already reacted
+      const { confession, reaction } = req.body
+      const reactionRes = await knex('reactions')
+        .select('*')
+        .where({ confession_id: confession, user_id: user.id })
+        .first()
+      if (reactionRes)
+        return res.json({ error: 'You already reacted to this confession' })
+
+      await knex('reactions').insert({
+        reaction,
+        confession_id: confession,
+        user_id: user.id,
+      })
+
+      const confessionRes = await knex('confessions')
+        .select('*')
+        .where('id', confession)
+        .first()
+      if (!confessionRes.reactions) confessionRes.reactions = {}
+      if (!confessionRes.reactions[reaction])
+        confessionRes.reactions[reaction] = 0
+      confessionRes.reactions[reaction] += 1
+
+      let reactTotal = 0
+      Object.keys(confessionRes.reactions).forEach((react) => {
+        reactTotal += confessionRes.reactions[react]
+      })
+
+      await knex('confessions')
+        .update({
+          reaction_total: reactTotal,
+          reactions: confessionRes.reactions,
+        })
+        .where('id', confession)
+
+      res.json({ success: true })
+    } catch (err) {
+      console.log(err)
+      res.json({ error: err })
+    }
   })
 }

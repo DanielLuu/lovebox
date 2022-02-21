@@ -3,7 +3,7 @@
 }
 
 .rt-td {
-	white-space: normal !important
+  white-space: normal !important;
 }
 
 .event-title {
@@ -39,7 +39,6 @@
 
 .btn-bar {
   margin-top: 10px;
-  margin-bottom: 30px;
 }
 
 .red {
@@ -52,5 +51,48 @@
 }
 
 .event-link {
-	margin: 15px 0;
+  margin: 15px 0;
+}
+
+.reaction-bar {
+  display: flex;
+  margin-top: 10px;
+}
+
+.reaction-pop {
+  padding: 5px;
+}
+
+.reaction {
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  background-color: #ebebeb;
+  padding: 2px 7px;
+}
+
+.react-pop-btn {
+  border: none;
+  border-radius: 5px;
+  padding: 2px 7px;
+  margin: 0px 5px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.react-pop-btn:hover {
+  background-color: #ebebeb;
+}
+
+.react-btn {
+  border: none;
+  border-radius: 5px;
+  padding: 2px 7px;
+  margin: 0px 5px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.react-btn:hover {
+  background-color: #ebebeb;
 }

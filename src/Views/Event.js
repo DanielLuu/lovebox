@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Card, CardText } from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
+import { Helmet } from 'react-helmet'
 
 import { http } from '../Common/Http'
 import * as actions from '../actions'
 import AdSlot from '../Common/AdSlot'
+
+import Confession from './Confession'
 
 class View extends Component {
   state = {
@@ -68,6 +70,14 @@ class View extends Component {
     }
   }
 
+  updateConfession = (id, update) => {
+    const { event, receiveConfessions } = this.props
+    const { confessions } = event
+    const conIndex = confessions.findIndex((con) => con.id === id)
+    confessions[conIndex] = { ...confessions[conIndex], ...update }
+    receiveConfessions([...confessions])
+  }
+
   handleChange = (field, event) => {
     this.props.formChange(field, event.target.value)
   }
@@ -101,23 +111,24 @@ class View extends Component {
     const { info, form, confessions } = event
     const { creating, search } = this.state
 
-    const approved = confessions
-      .filter((confession) => {
-        const { approved, first_name, last_name } = confession
-        const lowerSearch = search.toLowerCase()
+    const approved = confessions.filter((confession) => {
+      const { approved, first_name, last_name } = confession
+      const lowerSearch = search.toLowerCase()
 
-        return (
-          approved &&
-          (search
-            ? first_name.toLowerCase().includes(lowerSearch) ||
-              last_name.toLowerCase().includes(lowerSearch)
-            : true)
-        )
-      })
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      return (
+        approved &&
+        (search
+          ? first_name.toLowerCase().includes(lowerSearch) ||
+            last_name.toLowerCase().includes(lowerSearch)
+          : true)
+      )
+    })
 
     return (
       <div className='App container-fluid event-container'>
+        <Helmet>
+          <title>{`Lovebox | ${info.name} Confessions`}</title>
+        </Helmet>
         <AdSlot name='top-leaderboard' type='leaderboard_atf' />
 
         <h2 className='event-title'>{info.name} Confessions</h2>
@@ -210,42 +221,18 @@ class View extends Component {
           </div>
           <div className='row'>
             {approved.map((confession) => {
-              const { id, first_name, last_name, text } = confession
               return (
                 <div
-                  key={id}
+                  key={confession.id}
                   className='col-xs-12 col-sm-4'
                   style={{ marginBottom: 15 }}
                 >
-                  <Card>
-                    <CardText>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <div style={{ fontWeight: 'bold' }}>
-                          <span role='img' aria-label='heart'>
-                            ❤️
-                          </span>{' '}
-                          {first_name} {last_name}
-                        </div>
-                        {isAdmin && (
-                          <button
-                            className='change-btn delete'
-                            onClick={() => {
-                              this.delConfession(id)
-                            }}
-                          >
-                            <i className='fa fa-close fa-lg' />
-                          </button>
-                        )}
-                      </div>
-
-                      {text}
-                    </CardText>
-                  </Card>
+                  <Confession
+                    confession={confession}
+                    isAdmin={isAdmin}
+                    delConfession={this.delConfession}
+                    updateConfession={this.updateConfession}
+                  />
                 </div>
               )
             })}

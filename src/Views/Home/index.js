@@ -3,6 +3,7 @@ import { Card, CardTitle, CardText } from 'material-ui/Card'
 import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon'
 import RaisedButton from 'material-ui/RaisedButton'
+import { Helmet } from 'react-helmet'
 
 import { http } from '../../Common/Http'
 
@@ -22,6 +23,9 @@ class Home extends Component {
 
     return (
       <div className='container-fluid'>
+        <Helmet>
+          <title>{`Lovebox | Share anonymous positivity with friends and groups`}</title>
+        </Helmet>
         <div className='home-info row'>
           <div className='col-xs-12 col-sm-6'>
             <h2>Share the love</h2>
