@@ -19,9 +19,8 @@ class View extends Component {
   signup = (event) => {
     let { signup } = this.props.login
     http.post('/api/accounts/signup', signup).then((res) => {
-      if (!res.error) {
-        this.props.signin(true)
-      }
+      if (res.error) return alert(res.error)
+      this.props.signin(true)
     })
     event.preventDefault()
   }
