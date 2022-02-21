@@ -1,15 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#000000">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/lovebox.png">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/lovebox.png" />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -19,12 +22,124 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>lovebox</title>
+    <title>Lovebox | Share anonymous positivity with friends and groups</title>
+
+    <meta
+      name="description"
+      content="Lovebox is the perfect way to share anonymous positive notes to each other from friends or events. Receive, moderate, and share notes to keep that spark going even after your event is over."
+    />
+
+    <meta property="og:site_name" content="Lovebox" />
+    <meta
+      property="og:title"
+      content="Lovebox | Share anonymous positivity with friends and groups"
+    />
+    <meta property="og:description" content="" />
+    <meta
+      property="og:image"
+      content="https://cdn.diamondhands.io/lovebox/opengraph.jpg"
+    />
+    <meta property="og:url" content="https://lovebox.io/" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@akrew" />
+    <meta
+      name="twitter:title"
+      content="lovebox | Share anonymous positivity with friends and groups"
+    />
+    <meta name="twitter:description" content="" />
+    <meta
+      name="twitter:image"
+      content="https://cdn.diamondhands.io/lovebox/opengraph.jpg"
+    />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-MFEJZR0JJR"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+
+      gtag('config', 'G-MFEJZR0JJR')
+    </script>
+
+    <!-- Place after opening head tag - Header Bidding Script -->
+    <script type="text/javascript">
+      var tyche = {
+        mode: 'tyche',
+        config:
+          'https://config.playwire.com/1024367/v2/websites/73209/banner.json',
+        passiveMode: true,
+      }
+
+      // Array of ad units to show
+      // You can edit this array to include only the units you want to show on the page
+
+      // 2. Configure ad units
+      var pwUnits = [
+        // {
+        //   type: 'trendi_video'
+        // },
+        // {
+        //   type: 'bottom_rail'
+        // },
+        {
+          selectorId: 'top-leaderboard',
+          type: 'leaderboard_atf',
+        },
+        {
+          selectorId: 'bottom-leaderboard',
+          type: 'leaderboard_btf',
+        },
+        {
+          selectorId: 'top-med-rect',
+          type: 'med_rect_atf',
+        },
+        {
+          selectorId: 'bottom-med-rect',
+          type: 'med_rect_btf',
+        },
+      ]
+
+      // function that is called when tyche is ready
+      var init = function () {
+        tyche
+          .addUnits(pwUnits)
+          .then(() => {
+            tyche.displayUnits()
+          })
+          .catch((e) => {
+            // catch errors
+            tyche.displayUnits()
+            console.log(e)
+          })
+      }
+
+      // 3.
+      tyche.onReady = function () {
+        // attach function to tyche onReady
+        init()
+      }
+    </script>
+    <script
+      id="tyche"
+      async
+      src="//cdn.intergient.com/pageos/pageos.js"
+      type="text/javascript"
+    ></script>
+    <script
+      src="https://btloader.com/tag?o=5150306120761344&upapi=true"
+      async
+    ></script>
   </head>
   <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
     <div id="root"></div>
     <!--
       This HTML file is a template.

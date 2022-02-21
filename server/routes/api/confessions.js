@@ -2,14 +2,12 @@ module.exports = (app) => {
   app.get('/api/confessions/:event', async (req, res) => {
     const { event } = req.params
     const { approved } = req.query
-    
+
     const confessionQuery = knex('confessions')
       .select('*')
       .where({ event_code: event })
 
-    if (approved) {
-      confessionQuery.where('approved', false)
-    } else {
+    if (!approved) {
       confessionQuery.where('approved', true)
     }
 

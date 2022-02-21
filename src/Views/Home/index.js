@@ -26,9 +26,9 @@ class Home extends Component {
           <div className='col-xs-12 col-sm-6'>
             <h2>Share the love</h2>
             <div style={{ marginBottom: 15 }}>
-              Lovebox is the perfect way for your event guests to send anonymous
-              positive notes to each other. Receive, moderate, and share
-              confesstions to createt that spark even after your event is over.
+              Lovebox is the perfect way to share anonymous positive notes to
+              each other from friends or events. Receive, moderate, and share
+              notes to keep that spark going even after your event is over.
             </div>
             <div>
               <Link to='/login'>

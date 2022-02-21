@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Card, CardText } from 'material-ui/Card'
-
-import { http } from '../Common/Http'
-import * as actions from '../actions'
-
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+import { http } from '../Common/Http'
+import * as actions from '../actions'
+import AdSlot from '../Common/AdSlot'
 
 class View extends Component {
   state = {
+    creating: false,
     search: '',
   }
 
@@ -28,10 +26,10 @@ class View extends Component {
     if (event) {
       const query = {}
       if (isAdmin) query.approved = false
-      http.get('/api/event/' + event, query).then((res) => {
+      http.get('/api/event/' + event).then((res) => {
         this.props.receiveEvent(res)
       })
-      http.get('/api/confessions/' + event).then((res) => {
+      http.get('/api/confessions/' + event, query).then((res) => {
         this.props.receiveConfessions(res)
       })
 
@@ -101,7 +99,7 @@ class View extends Component {
   render = () => {
     const { event, isAdmin } = this.props
     const { info, form, confessions } = event
-    const { search } = this.state
+    const { creating, search } = this.state
 
     const approved = confessions
       .filter((confession) => {
@@ -120,48 +118,86 @@ class View extends Component {
 
     return (
       <div className='App container-fluid event-container'>
+        <AdSlot name='nookazon_itm_leaderboard' />
+
         <h2 className='event-title'>{info.name} Confessions</h2>
         <div className='red' style={{ marginTop: 10 }}>
           NOTE: Your confession will not appear until it is approved.
         </div>
         <div className='align-left'>
-          <form className='confess-form' onSubmit={this.handleSubmit}>
-            <TextField
-              floatingLabelText={'First Name'}
-              fullWidth={true}
-              value={form.first_name}
-              onChange={(event) => {
-                this.handleChange('first_name', event)
-              }}
-            />
-            <TextField
-              floatingLabelText={'Last Name'}
-              fullWidth={true}
-              value={form.last_name}
-              onChange={(event) => {
-                this.handleChange('last_name', event)
-              }}
-            />
-            <TextField
-              floatingLabelText={'Confession'}
-              multiLine={true}
-              rows={2}
-              fullWidth={true}
-              value={form.text}
-              onChange={(event) => {
-                this.handleChange('text', event)
-              }}
-            />
+          {creating ? (
+            <form className='confess-form' onSubmit={this.handleSubmit}>
+              <div className='row'>
+                <div className='col-xs-12 col-sm-6'>
+                  <TextField
+                    floatingLabelText='To First Name'
+                    fullWidth={true}
+                    value={form.first_name}
+                    onChange={(event) => {
+                      this.handleChange('first_name', event)
+                    }}
+                  />
+                </div>
+                <div className='col-xs-12 col-sm-6'>
+                  <TextField
+                    floatingLabelText='To Last Name'
+                    fullWidth={true}
+                    Y
+                    value={form.last_name}
+                    onChange={(event) => {
+                      this.handleChange('last_name', event)
+                    }}
+                  />
+                </div>
+                <div className='col-xs-12'>
+                  <TextField
+                    floatingLabelText={'Confession'}
+                    multiLine={true}
+                    rows={2}
+                    fullWidth={true}
+                    value={form.text}
+                    onChange={(event) => {
+                      this.handleChange('text', event)
+                    }}
+                  />
+                </div>
+              </div>
+              <div className='btn-bar row'>
+                <div className='col-xs-6'>
+                  <RaisedButton
+                    type='submit'
+                    labelColor='white'
+                    backgroundColor='#ff5152'
+                    fullWidth={true}
+                    label='CONFESS'
+                  />
+                </div>
+                <div className='col-xs-6'>
+                  <RaisedButton
+                    fullWidth
+                    secondary
+                    label='CANCEL'
+                    onClick={(e) => {
+                      e.preventDefault()
+                      this.setState({ creating: false })
+                    }}
+                  />
+                </div>
+              </div>
+            </form>
+          ) : (
             <div className='btn-bar'>
               <RaisedButton
-                type='submit'
                 labelColor='white'
                 backgroundColor='#ff5152'
                 fullWidth={true}
-                label='CONFESS'
+                label='ADD YOUR CONFESSION'
+                onClick={() => {
+                  this.setState({ creating: true })
+                }}
               />
             </div>
-          </form>
+          )}
           <div style={{ marginBottom: 15 }}>
             <TextField
               floatingLabelText={'Search name'}
@@ -210,17 +246,7 @@ class View extends Component {
               )
             })}
           </div>
-
-          {/* <ReactTable
-            className='-striped'
-            data={approved}
-            columns={this.columns}
-            filterable
-            defaultFilterMethod={this.customFilter}
-            pageSize={approved.length}
-            showPagination={false}
-            loading={!approved}
-          /> */}
+          <AdSlot name='nookazon_itm_leaderboard_btf' />
         </div>
       </div>
     )
