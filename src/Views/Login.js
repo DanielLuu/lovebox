@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { http } from '../Common/Http'
-import * as actions from '../actions'
 import { Redirect } from 'react-router-dom'
-
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
+
+import { http } from '../Common/Http'
+import * as actions from '../actions'
+import { setUser } from '../services/users'
 
 class View extends Component {
   handleChange = (type, field, event) => {
@@ -21,6 +22,7 @@ class View extends Component {
     http.post('/api/accounts/signup', signup).then((res) => {
       if (res.error) return alert(res.error)
       this.props.signin(true)
+      setUser(res.user)
     })
     event.preventDefault()
   }
@@ -28,11 +30,9 @@ class View extends Component {
   signin = (event) => {
     let { signin } = this.props.login
     http.post('/api/accounts/login', signin).then((res) => {
-      if (!res.error) {
-        this.props.signin(true)
-      } else {
-        alert(res.error)
-      }
+      if (res.error) return alert(res.error)
+      this.props.signin(true)
+      setUser(res.user)
     })
     event.preventDefault()
   }

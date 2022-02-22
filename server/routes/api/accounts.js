@@ -19,18 +19,23 @@ module.exports = (app) => {
       return res.json({ error: 'This email address is already in use' })
 
     // Create account if no duplicate email is found
-    await knex('users').insert({
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
-      pass_hash: passHash,
-      pass_salt: salt,
-      activate_token: activateToken,
-      activated: true,
-      created_at: knex.raw('now()'),
-      updated_at: knex.raw('now()'),
+    const user = await knex('users')
+      .insert({
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        pass_hash: passHash,
+        pass_salt: salt,
+        activate_token: activateToken,
+        activated: true,
+        created_at: knex.raw('now()'),
+        updated_at: knex.raw('now()'),
+      })
+      .returning('*')
+
+    res.json({
+      user: { first_name: user[0].first_name, last_name: user[0].last_name },
     })
-    res.json({ success: true })
   })
 
   app.post('/api/accounts/login', (req, res) => {
@@ -53,12 +58,15 @@ module.exports = (app) => {
                 let sid = crypto.setCookie(req)
                 // Make new cookie
                 return trx('users')
-                  .update({
-                    session_key: sid,
-                  })
+                  .update({ session_key: sid })
                   .where('email', body.email)
-                  .then((result) => {
-                    res.json({ error: undefined })
+                  .then(() => {
+                    res.json({
+                      user: {
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                      },
+                    })
                   })
               } else {
                 res.json({

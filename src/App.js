@@ -3,18 +3,21 @@ import { connect } from 'react-redux'
 import * as actions from './actions'
 import { Link } from 'react-router-dom'
 
+import { getUser } from './services/users'
+
 import lovebox from './lovebox.png'
 
 import './App.css'
 //<Link to='/login'><button className='btn'>Sign In</button></Link>
 class View extends Component {
   render() {
-    let { user } = this.props.login
+    // let { user } = this.props.login
+    const user = getUser()
     return (
       <div className='App'>
         <div className='App-header'>
           <div className='account-name'>
-            {user.id ? (
+            {user ? (
               <Link to='/profile'>
                 {user.first_name + ' ' + user.last_name}
               </Link>

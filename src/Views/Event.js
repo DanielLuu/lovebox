@@ -2,16 +2,23 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import IconButton from 'material-ui/IconButton'
 import { Helmet } from 'react-helmet'
+import SortIcon from 'material-ui/svg-icons/content/sort'
+import qs from 'qs'
 
 import { http } from '../Common/Http'
 import * as actions from '../actions'
 import AdSlot from '../Common/AdSlot'
+import Loading from '../Common/Loading'
 
 import Confession from './Confession'
 
 class View extends Component {
   state = {
+    loading: false,
     creating: false,
     search: '',
   }
@@ -22,18 +29,28 @@ class View extends Component {
     { Header: 'Confession', accessor: 'text' },
   ]
 
+  fetchConfessions = () => {
+    const { match, isAdmin, location } = this.props
+    const event = match.params.event
+    const { sort } = qs.parse(location.search.substring(1))
+    const query = {}
+    if (isAdmin) query.approved = false
+    if (sort) query.sort = sort
+    this.setState({ loading: true })
+    http.get('/api/confessions/' + event, query).then((res) => {
+      this.props.receiveConfessions(res)
+      this.setState({ loading: false })
+    })
+  }
+
   componentWillMount = () => {
-    let event = this.props.match.params.event
-    let { isAdmin } = this.props
+    const { match, isAdmin } = this.props
+    const event = match.params.event
     if (event) {
-      const query = {}
-      if (isAdmin) query.approved = false
       http.get('/api/event/' + event).then((res) => {
         this.props.receiveEvent(res)
       })
-      http.get('/api/confessions/' + event, query).then((res) => {
-        this.props.receiveConfessions(res)
-      })
+      this.fetchConfessions()
 
       if (isAdmin) {
         this.columns.push({
@@ -57,6 +74,11 @@ class View extends Component {
         })
       }
     }
+  }
+
+  componentDidUpdate = (prevProps) => {
+    // if (this.props.location.search !== prevProps.location.search)
+    //   this.fetchConfessions()
   }
 
   delConfession = (id) => {
@@ -97,6 +119,10 @@ class View extends Component {
     event.preventDefault()
   }
 
+  handleSortChange = (event, value) => {
+    this.updateQuery({ sort: value })
+  }
+
   customFilter = (filter, row) => {
     const id = filter.pivotId || filter.id
     if (row[id] !== null && typeof row[id] === 'string') {
@@ -106,23 +132,66 @@ class View extends Component {
     }
   }
 
+  updateQuery = (update) => {
+    const { history, location } = this.props
+    const query = qs.parse(location.search.substring(1))
+    const combined = { ...query, ...update }
+    Object.keys(combined).forEach(
+      (key) => combined[key] === null && delete combined[key]
+    )
+    history.push({ search: qs.stringify({ ...combined }) })
+  }
+
+  sortStr = (a, b, field) => {
+    return a[field] > b[field] ? 1 : b[field] > a[field] ? -1 : 0
+  }
+
   render = () => {
-    const { event, isAdmin } = this.props
+    const { event, isAdmin, location } = this.props
     const { info, form, confessions } = event
-    const { creating, search } = this.state
+    const { creating, search, loading } = this.state
+    const query = qs.parse(location.search.substring(1))
 
-    const approved = confessions.filter((confession) => {
-      const { approved, first_name, last_name } = confession
-      const lowerSearch = search.toLowerCase()
+    let sortFn = ''
+    switch (query.sort) {
+      case 'date-asc':
+        sortFn = (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        break
+      case 'reactions-desc':
+        sortFn = (a, b) => b.reaction_total - a.reaction_total
+        break
+      case 'first-asc':
+        sortFn = (a, b) => this.sortStr(a, b, 'first_name')
+        break
+      case 'first-desc':
+        sortFn = (a, b) => this.sortStr(b, a, 'first_name')
+        break
+      case 'last-asc':
+        sortFn = (a, b) => this.sortStr(a, b, 'last_name')
+        break
+      case 'last-desc':
+        sortFn = (a, b) => this.sortStr(b, a, 'last_name')
+        break
+      case 'date-desc':
+      default:
+        sortFn = (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        break
+    }
 
-      return (
-        approved &&
-        (search
-          ? first_name.toLowerCase().includes(lowerSearch) ||
-            last_name.toLowerCase().includes(lowerSearch)
-          : true)
-      )
-    })
+    const approved = confessions
+      .filter((confession) => {
+        const { approved, first_name, last_name } = confession
+        const lowerSearch = search.toLowerCase()
+
+        return (
+          approved &&
+          (search
+            ? first_name.toLowerCase().includes(lowerSearch) ||
+              last_name.toLowerCase().includes(lowerSearch)
+            : true)
+        )
+      })
+      .sort(sortFn)
 
     return (
       <div className='App container-fluid event-container'>
@@ -209,7 +278,13 @@ class View extends Component {
               />
             </div>
           )}
-          <div style={{ marginBottom: 15 }}>
+          <div
+            style={{
+              marginBottom: 15,
+              display: 'flex',
+              alignItems: 'flex-end',
+            }}
+          >
             <TextField
               floatingLabelText={'Search name'}
               fullWidth={true}
@@ -218,25 +293,47 @@ class View extends Component {
                 this.setState({ search: e.target.value })
               }}
             />
+            <IconMenu
+              iconButtonElement={
+                <IconButton>
+                  <SortIcon />
+                </IconButton>
+              }
+              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+              onChange={this.handleSortChange}
+              value={query.sort}
+            >
+              <MenuItem value='date-desc' primaryText='Newest' />
+              <MenuItem value='date-asc' primaryText='Oldest' />
+              <MenuItem value='reactions-desc' primaryText='Top Reactions' />
+              <MenuItem value='first-asc' primaryText='A - Z First Name' />
+              <MenuItem value='first-desc' primaryText='Z - A First Name' />
+              <MenuItem value='last-asc' primaryText='A - Z Last Name' />
+              <MenuItem value='last-desc' primaryText='Z - A Last Name' />
+            </IconMenu>
           </div>
-          <div className='row'>
-            {approved.map((confession) => {
-              return (
-                <div
-                  key={confession.id}
-                  className='col-xs-12 col-sm-4'
-                  style={{ marginBottom: 15 }}
-                >
-                  <Confession
-                    confession={confession}
-                    isAdmin={isAdmin}
-                    delConfession={this.delConfession}
-                    updateConfession={this.updateConfession}
-                  />
-                </div>
-              )
-            })}
-          </div>
+          {approved.length > 0 && (
+            <div className='row'>
+              {approved.map((confession) => {
+                return (
+                  <div
+                    key={confession.id}
+                    className='col-xs-12 col-sm-4'
+                    style={{ marginBottom: 15 }}
+                  >
+                    <Confession
+                      confession={confession}
+                      isAdmin={isAdmin}
+                      delConfession={this.delConfession}
+                      updateConfession={this.updateConfession}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          )}
+          {loading && <Loading />}
           <AdSlot name='bottom-leaderboard' type='leaderboard_btf' />
         </div>
       </div>

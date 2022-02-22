@@ -1,15 +1,39 @@
 module.exports = (app) => {
   app.get('/api/confessions/:event', async (req, res) => {
     const { event } = req.params
-    const { approved } = req.query
+    const { approved, sort } = req.query
 
     const confessionQuery = knex('confessions')
       .select('*')
       .where({ event_code: event })
-      .orderBy('created_at', 'desc')
-      
-    if (!approved) {
-      confessionQuery.where('approved', true)
+
+    if (!approved) confessionQuery.where('approved', true)
+
+    switch (sort) {
+      case 'date-desc':
+        confessionQuery.orderBy('created_at', 'desc')
+        break
+      case 'date-asc':
+        confessionQuery.orderBy('created_at', 'asc')
+        break
+      case 'reactions-desc':
+        confessionQuery.orderBy('reaction_total', 'desc')
+        break
+      case 'first-asc':
+        confessionQuery.orderBy('first_name', 'asc')
+        break
+      case 'first-desc':
+        confessionQuery.orderBy('first_name', 'desc')
+        break
+      case 'last-asc':
+        confessionQuery.orderBy('last_name', 'asc')
+        break
+      case 'last-desc':
+        confessionQuery.orderBy('last_name', 'desc')
+        break
+      default:
+        confessionQuery.orderBy('created_at', 'desc')
+        break
     }
 
     const result = await confessionQuery
